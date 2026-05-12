@@ -11,15 +11,20 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.example.registrodeocupacion.domain.model.Ocupacion
+import com.example.registrodeocupacion.domain.repository.OcupacionRepository
 import com.example.registrodeocupacion.domain.useCase.DeleteOcupacionUseCase
 import com.example.registrodeocupacion.domain.useCase.GetOcupacionUseCase
 import com.example.registrodeocupacion.domain.useCase.UpsertOcupacionUseCase
+import com.example.registrodeocupacion.domain.useCase.validateDescription
+import com.example.registrodeocupacion.domain.useCase.validateSueldo
 import com.example.registrodeocupacion.presentacion.navegation.Screen
+import kotlinx.coroutines.flow.first
 
 import javax.inject.Inject
 
 @HiltViewModel
 class OcupacionFormViewModel @Inject constructor(
+    private val repository: OcupacionRepository,
     private val getOcupacionUseCase: GetOcupacionUseCase,
     private val upsertOcupacionUseCase: UpsertOcupacionUseCase,
     private val deleteOcupacionUseCase: DeleteOcupacionUseCase,
@@ -42,9 +47,11 @@ class OcupacionFormViewModel @Inject constructor(
             is OcupacionFormUiEvent.DescripcionChanged -> _state.update {
                 it.copy(descripcion = event.value, descripcionError = null)
             }
+
             is OcupacionFormUiEvent.SueldoChanged -> _state.update {
                 it.copy(sueldo = event.value, sueldoError = null)
             }
+
             OcupacionFormUiEvent.Save -> onSave()
             OcupacionFormUiEvent.Delete -> onDelete()
         }
@@ -74,23 +81,26 @@ class OcupacionFormViewModel @Inject constructor(
     }
 
     private fun onSave() {
-        val descripcion = state.value.descripcion
-        val sueldoText = state.value.sueldo
-
-        val descripcionValidation = validateDescripcion(descripcion)
-        val sueldoValidation = validateSueldo(sueldoText)
-
-        if (!descripcionValidation.isValid || !sueldoValidation.isValid) {
-            _state.update {
-                it.copy(
-                    descripcionError = descripcionValidation.error,
-                    sueldoError = sueldoValidation.error
-                )
-            }
-            return
-        }
-
         viewModelScope.launch {
+            val descripcion = state.value.descripcion
+            val sueldoText = state.value.sueldo
+
+            val descripcionesExistentes = repository.observeOcupaciones()
+                .first()
+                .map { it.descricion }
+
+            val descripcionValidation = validateDescription(descripcion, descripcionesExistentes)
+            val sueldoValidation = validateSueldo(sueldoText)
+
+            if (!descripcionValidation.isValid || !sueldoValidation.isValid) {
+                _state.update {
+                    it.copy(
+                        descripcionError = descripcionValidation.error,
+                        sueldoError = sueldoValidation.error
+                    )
+                }
+                return@launch
+            }
             _state.update { it.copy(isSaving = true) }
 
             val ocupacion = Ocupacion(
@@ -124,29 +134,4 @@ class OcupacionFormViewModel @Inject constructor(
             _state.update { it.copy(isDeleting = false, deleted = true) }
         }
     }
-
-    private fun validateDescripcion(descripcion: String): ValidationResult {
-        if (descripcion.isBlank()) {
-            return ValidationResult(isValid = false, error = "La descricion no puede estar vacia")
-        }
-        return ValidationResult(isValid = true)
-    }
-
-    private fun validateSueldo(sueldo: String): ValidationResult {
-        if (sueldo.isBlank()) {
-            return ValidationResult(isValid = false, error = "El sueldo no puede estar vacio")
-        }
-
-        val sueldoDouble = sueldo.toDoubleOrNull()
-
-        if (sueldoDouble == null || sueldoDouble <= 0) {
-            return ValidationResult(isValid = false, error = "Ingrese un monto valido mayor a 0")
-        }
-        return ValidationResult(isValid = true)
-    }
 }
-
-data class ValidationResult(
-    val isValid: Boolean,
-    val error: String? = null
-)

@@ -14,7 +14,7 @@ fun validateDescription(descripcion: String, ocupacioneExistentes: List<String>)
             error = "Tiene que tener mas de 3 caracteres para que sea mas grande")
         ocupacioneExistentes.any{it.equals( other= descripcion.trim(), ignoreCase = true)}
             -> OcupacionValidation( isValid = false,
-            error = "La descripcion esta duplicada por favor ingresar otra descnipcion")
+            error = "La descripcion esta duplicada por favor ingresar otra mierda")
         else -> OcupacionValidation( isValid = true)
     }
 }
