@@ -56,7 +56,7 @@ class OcupacionListViewModel @Inject constructor(
     private fun onDelete(id: Int) {
         viewModelScope.launch {
             deleteOcupacionUseCase(id)
-            onEvent(OcupacionListUiEvent.ShowMessage("Ocupación Eliminada"))
+            onEvent(OcupacionListUiEvent.ShowMessage("Ocupacion Eliminada"))
         }
     }
 

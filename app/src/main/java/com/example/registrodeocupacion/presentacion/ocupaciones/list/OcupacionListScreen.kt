@@ -76,7 +76,7 @@ fun OcupacionListBody(
                 onClick = onAddClick,
                 modifier = Modifier.testTag("fab_add")
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Agregar Ocupación")
+                Icon(Icons.Default.Add, contentDescription = "Agregar Ocupacion")
             }
         }
     ) { padding ->
