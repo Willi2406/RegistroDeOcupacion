@@ -1,8 +1,7 @@
-package ucne.edu.registroocupacionesv2
+package com.example.registrodeocupacion
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
-
 
 @HiltAndroidApp
 class RegistroOcupacionesApp: Application() {
