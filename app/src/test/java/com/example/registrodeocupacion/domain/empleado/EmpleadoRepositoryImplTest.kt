@@ -48,7 +48,7 @@ class EmpleadoRepositoryImplTest {
         TestCase.assertEquals(0, result)
         coVerify { dao.upsert(any()) }
         TestCase.assertEquals(LocalDate.now(), empleadoSlot.captured.fechaIngreso)
-        TestCase.assertEquals("Juli", empleadoSlot.captured.sexo)
+        TestCase.assertEquals("Femenino", empleadoSlot.captured.sexo)
         TestCase.assertEquals(1000000.0, empleadoSlot.captured.sueldo)
 
     }
@@ -93,7 +93,7 @@ class EmpleadoRepositoryImplTest {
 
     @Test
     fun `buscar retorna ocupacion correctamente`() = runTest {
-        val entity = EmpleadoEntity(1, LocalDate.now(), "Juan", "Masculino", 10000.0)
+        val entity = EmpleadoEntity(1, LocalDate.now(), "Jose", "Masculino", 10000.0)
         coEvery { dao.getById(1) } returns entity
 
         val result = repository.getEmpleado(1)
