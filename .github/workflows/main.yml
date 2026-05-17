@@ -2,9 +2,9 @@ name: Android CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "RegistroDeEmpleados" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "RegistroDeEmpleados" ]
     
 permissions:
   checks: write
