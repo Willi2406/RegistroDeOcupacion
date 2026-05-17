@@ -1,6 +1,9 @@
 package com.example.registrodeocupacion.presentacion.navegation
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -8,11 +11,15 @@ import androidx.navigation.compose.rememberNavController
 import com.example.registrodeocupacion.presentacion.ocupaciones.list.OcupacionListScreen
 import com.example.registrodeocupacion.presentacion.ocupaciones.edit.OcupacionFormScreen
 
+
+
 @Composable
-fun OcupacionNavHost(
-    navController: NavHostController = rememberNavController()
+fun MineNavHost(
+    navController: NavHostController = rememberNavController(),
+    innerPadding: PaddingValues
 ) {
     NavHost(
+        modifier = Modifier.padding(innerPadding),
         navController =  navController,
         startDestination = Screen.OcupacionList
     ) {

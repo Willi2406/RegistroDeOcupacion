@@ -1,7 +1,7 @@
-package com.example.registrodeocupacion.data.mapper
+package com.example.registrodeocupacion.data.ocupacion.mapper
 
-import com.example.registrodeocupacion.data.local.OcupacioneEntity
-import com.example.registrodeocupacion.domain.model.Ocupacion
+import com.example.registrodeocupacion.data.ocupacion.local.OcupacioneEntity
+import com.example.registrodeocupacion.domain.ocupacion.model.Ocupacion
 
 fun OcupacioneEntity.toDomain() : Ocupacion = Ocupacion(
     ocupacioneId = ocupacioneId,

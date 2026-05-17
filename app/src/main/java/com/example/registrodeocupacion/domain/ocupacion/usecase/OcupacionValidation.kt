@@ -1,4 +1,4 @@
-package com.example.registrodeocupacion.domain.useCase
+package com.example.registrodeocupacion.domain.ocupacion.usecase
 
 data class OcupacionValidation(
     val isValid: Boolean,

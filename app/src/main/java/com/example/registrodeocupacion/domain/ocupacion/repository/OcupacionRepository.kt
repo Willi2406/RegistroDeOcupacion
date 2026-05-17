@@ -1,6 +1,6 @@
-package com.example.registrodeocupacion.domain.repository
+package com.example.registrodeocupacion.domain.ocupacion.repository
 
-import com.example.registrodeocupacion.domain.model.Ocupacion
+import com.example.registrodeocupacion.domain.ocupacion.model.Ocupacion
 import kotlinx.coroutines.flow.Flow
 
 interface OcupacionRepository {

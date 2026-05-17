@@ -1,7 +1,7 @@
-package com.example.registrodeocupacion.domain.useCase
+package com.example.registrodeocupacion.domain.ocupacion.usecase
 
-import com.example.registrodeocupacion.domain.model.Ocupacion
-import com.example.registrodeocupacion.domain.repository.OcupacionRepository
+import com.example.registrodeocupacion.domain.ocupacion.model.Ocupacion
+import com.example.registrodeocupacion.domain.ocupacion.repository.OcupacionRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

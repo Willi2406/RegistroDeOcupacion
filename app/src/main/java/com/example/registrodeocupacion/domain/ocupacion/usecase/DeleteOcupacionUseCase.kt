@@ -1,6 +1,6 @@
-package com.example.registrodeocupacion.domain.useCase
+package com.example.registrodeocupacion.domain.ocupacion.usecase
 
-import com.example.registrodeocupacion.domain.repository.OcupacionRepository
+import com.example.registrodeocupacion.domain.ocupacion.repository.OcupacionRepository
 import javax.inject.Inject
 
 class DeleteOcupacionUseCase @Inject constructor(

@@ -1,4 +1,4 @@
-package com.example.registrodeocupacion.data.local
+package com.example.registrodeocupacion.data.ocupacion.local
 
 import androidx.room.Dao
 import androidx.room.Delete

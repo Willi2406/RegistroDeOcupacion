@@ -10,13 +10,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import com.example.registrodeocupacion.domain.model.Ocupacion
-import com.example.registrodeocupacion.domain.repository.OcupacionRepository
-import com.example.registrodeocupacion.domain.useCase.DeleteOcupacionUseCase
-import com.example.registrodeocupacion.domain.useCase.GetOcupacionUseCase
-import com.example.registrodeocupacion.domain.useCase.UpsertOcupacionUseCase
-import com.example.registrodeocupacion.domain.useCase.validateDescription
-import com.example.registrodeocupacion.domain.useCase.validateSueldo
+import com.example.registrodeocupacion.domain.ocupacion.model.Ocupacion
+import com.example.registrodeocupacion.domain.ocupacion.repository.OcupacionRepository
+import com.example.registrodeocupacion.domain.ocupacion.usecase.DeleteOcupacionUseCase
+import com.example.registrodeocupacion.domain.ocupacion.usecase.GetOcupacionUseCase
+import com.example.registrodeocupacion.domain.ocupacion.usecase.UpsertOcupacionUseCase
+import com.example.registrodeocupacion.domain.ocupacion.usecase.validateDescription
+import com.example.registrodeocupacion.domain.ocupacion.usecase.validateSueldo
 import com.example.registrodeocupacion.presentacion.navegation.Screen
 import kotlinx.coroutines.flow.first
 

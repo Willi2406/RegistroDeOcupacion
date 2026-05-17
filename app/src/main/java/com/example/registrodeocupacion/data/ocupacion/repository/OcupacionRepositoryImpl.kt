@@ -1,10 +1,10 @@
-package com.example.registrodeocupacion.data.repository
+package com.example.registrodeocupacion.data.ocupacion.repository
 
-import com.example.registrodeocupacion.data.local.OcupacionDao
-import com.example.registrodeocupacion.data.mapper.toDomain
-import com.example.registrodeocupacion.data.mapper.toEntity
-import com.example.registrodeocupacion.domain.model.Ocupacion
-import com.example.registrodeocupacion.domain.repository.OcupacionRepository
+import com.example.registrodeocupacion.data.ocupacion.local.OcupacionDao
+import com.example.registrodeocupacion.data.ocupacion.mapper.toDomain
+import com.example.registrodeocupacion.data.ocupacion.mapper.toEntity
+import com.example.registrodeocupacion.domain.ocupacion.model.Ocupacion
+import com.example.registrodeocupacion.domain.ocupacion.repository.OcupacionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

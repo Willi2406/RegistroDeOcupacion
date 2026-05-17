@@ -34,7 +34,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.registrodeocupacion.domain.model.Ocupacion
+import com.example.registrodeocupacion.domain.ocupacion.model.Ocupacion
 
 @Composable
 fun OcupacionListScreen(

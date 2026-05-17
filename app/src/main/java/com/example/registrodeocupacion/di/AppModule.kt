@@ -2,10 +2,13 @@ package com.example.registrodeocupacion.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.registrodeocupacion.data.database.OcupacionDB
-import com.example.registrodeocupacion.data.local.OcupacionDao
-import com.example.registrodeocupacion.data.repository.OcupacionRepositoryImpl
-import com.example.registrodeocupacion.domain.repository.OcupacionRepository
+import com.example.registrodeocupacion.data.database.Registro
+import com.example.registrodeocupacion.data.empleado.local.EmpleadoDao
+import com.example.registrodeocupacion.data.empleado.repository.EmpleadoRepositoryImpl
+import com.example.registrodeocupacion.data.ocupacion.local.OcupacionDao
+import com.example.registrodeocupacion.data.ocupacion.repository.OcupacionRepositoryImpl
+import com.example.registrodeocupacion.domain.empleado.repository.EmpleadoRepository
+import com.example.registrodeocupacion.domain.ocupacion.repository.OcupacionRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -24,20 +27,31 @@ abstract class AppModule {
         ocupacionRepositoryImpl: OcupacionRepositoryImpl
     ): OcupacionRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindEmpleadoRepository(
+        empleadoRepositoryImpl: EmpleadoRepositoryImpl
+    ): EmpleadoRepository
+
     companion object {
         @Provides
         @Singleton
-        fun provideOcupacionDB(@ApplicationContext context: Context): OcupacionDB {
+        fun provideOcupacionDB(@ApplicationContext context: Context): Registro {
             return Room.databaseBuilder(
                 context,
-                OcupacionDB::class.java,
+                Registro::class.java,
                 "Ocupacion.db"
             ).fallbackToDestructiveMigration().build()
         }
 
         @Provides
-        fun provideOcupacionDao(db: OcupacionDB): OcupacionDao {
+        fun provideOcupacionDao(db: Registro): OcupacionDao {
             return db.OcupacionDao()
+        }
+
+        @Provides
+        fun provideEmpleadoDao(db: Registro): EmpleadoDao {
+            return db.EmpleadoDao()
         }
     }
 }

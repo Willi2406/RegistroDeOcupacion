@@ -1,4 +1,4 @@
-package com.example.registrodeocupacion.data.local
+package com.example.registrodeocupacion.data.ocupacion.local
 
 import android.R
 import androidx.room.Entity
