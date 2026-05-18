@@ -12,7 +12,7 @@ fun validarNombres(nombres: String): ValidationResult {
     return when{
         nombres.isBlank() -> ValidationResult(false, "El nombre es obligatorio")
         nombres.length < 2 -> ValidationResult(false, "Minimo 2 caracteres")
-        !nombres.all {it.isLetter()} -> ValidationResult(false, "El nombre solo debe contener letras")
+        !nombres.all {it.isLetter()||it.isWhitespace()} -> ValidationResult(false, "El nombre solo debe contener letras")
         else -> ValidationResult(true)
     }
 }
