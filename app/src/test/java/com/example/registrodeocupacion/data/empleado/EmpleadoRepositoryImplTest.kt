@@ -1,6 +1,5 @@
-package com.example.registrodeocupacion.domain.empleado
+package com.example.registrodeocupacion.data.empleado
 
-import androidx.compose.ui.platform.LocalContext
 import com.example.registrodeocupacion.data.empleado.local.EmpleadoDao
 import com.example.registrodeocupacion.data.empleado.local.EmpleadoEntity
 import com.example.registrodeocupacion.data.empleado.repository.EmpleadoRepositoryImpl

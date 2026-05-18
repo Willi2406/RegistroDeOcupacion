@@ -1,4 +1,4 @@
-package com.example.registrodeocupacion.domain.ocupacion
+package com.example.registrodeocupacion.data.ocupacion
 
 import com.example.registrodeocupacion.data.ocupacion.local.OcupacionDao
 import com.example.registrodeocupacion.data.ocupacion.local.OcupacioneEntity
@@ -11,8 +11,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -44,19 +43,20 @@ class OcupacionRepositoryImplTest {
 
         val result = repository.upsert(ocupacion)
 
-        assertEquals(0,result)
+        TestCase.assertEquals(0, result)
         coVerify { dao.upsert(any()) }
-        assertEquals("Nueva ocupacion", ocupacionSlot.captured.descricion)
-        assertEquals(30.0, ocupacionSlot.captured.sueldo)
+        TestCase.assertEquals("Nueva ocupacion", ocupacionSlot.captured.descricion)
+        TestCase.assertEquals(30.0, ocupacionSlot.captured.sueldo)
     }
     @Test
     fun `upsert actualiza guarda ocupacion correctamente`() = runTest {
-        val ocupacion = Ocupacion(ocupacioneId = 1, descricion = "Ocupacion actualizada", sueldo = 45.0)
+        val ocupacion =
+            Ocupacion(ocupacioneId = 1, descricion = "Ocupacion actualizada", sueldo = 45.0)
         coEvery { dao.upsert(any()) } just Runs
 
         val result = repository.upsert(ocupacion)
 
-        assertEquals(1, result)
+        TestCase.assertEquals(1, result)
         coVerify { dao.upsert(any()) }
     }
 
@@ -80,9 +80,9 @@ class OcupacionRepositoryImplTest {
 
         val result = repository.observeOcupaciones().first()
 
-        assertEquals(2, result.size)
-        assertEquals("Ocupacion 1", result[0].descricion)
-        assertEquals("Ocupacion 2", result[1].descricion)
+        TestCase.assertEquals(2, result.size)
+        TestCase.assertEquals("Ocupacion 1", result[0].descricion)
+        TestCase.assertEquals("Ocupacion 2", result[1].descricion)
     }
 
     @Test
@@ -92,8 +92,8 @@ class OcupacionRepositoryImplTest {
 
         val result = repository.getOcupacion(1)
 
-        assertNotNull(result)
-        assertEquals("Ocupacion Test", result?.descricion)
-        assertEquals(30.0, result?.sueldo)
+        TestCase.assertNotNull(result)
+        TestCase.assertEquals("Ocupacion Test", result?.descricion)
+        TestCase.assertEquals(30.0, result?.sueldo)
     }
 }
