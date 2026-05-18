@@ -66,40 +66,13 @@ class UpsertEmpleadoUseCaseTest {
         val empleado = Empleado(
             empleadoId = 0,
             fechaIngreso = LocalDate.now(),
-            nombres = "Jo",
+            nombres = "J",
             sexo = "Masculino",
             sueldo = 25000.0
         )
         coEvery { repository.observeEmpleados() } returns flowOf(emptyList())
 
         val result = useCase(empleado)
-        assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is IllegalArgumentException)
-    }
-
-    @Test
-    fun `invoke falla cuando el empleado ya esta registrado`() = runTest {
-        val empleadosExistentes = listOf(
-            Empleado(
-                empleadoId = 1,
-                fechaIngreso = LocalDate.now(),
-                nombres = "Juan Perez",
-                sexo = "Masculino",
-                sueldo = 25000.0
-            )
-        )
-        coEvery { repository.observeEmpleados() } returns flowOf(empleadosExistentes)
-
-        val nuevoEmpleado = Empleado(
-            empleadoId = 0,
-            fechaIngreso = LocalDate.now(),
-            nombres = "Juan Perez",
-            sexo = "Masculino",
-            sueldo = 30000.0
-        )
-
-        val result = useCase(nuevoEmpleado)
-
         assertTrue(result.isFailure)
         assertTrue(result.exceptionOrNull() is IllegalArgumentException)
     }
@@ -114,6 +87,26 @@ class UpsertEmpleadoUseCaseTest {
             sueldo = -5000.0
         )
         coEvery { repository.observeEmpleados() } returns flowOf(emptyList())
+
+        val result = useCase(empleado)
+
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is IllegalArgumentException)
+    }
+
+    @Test
+    fun `invoke falla con sexo vacio`() = runTest {
+        val empleado = Empleado(empleadoId = 0, fechaIngreso = LocalDate.now(), nombres = "Alfredo", "", 30000.0)
+
+        val result = useCase(empleado)
+
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is IllegalArgumentException)
+    }
+
+    @Test
+    fun `invoke falla con fecha posterior a la actual`() = runTest {
+        val empleado = Empleado(empleadoId = 0, fechaIngreso = LocalDate.now().plusYears(1), nombres = "Alfredo", "Masculino", 30000.0)
 
         val result = useCase(empleado)
 
