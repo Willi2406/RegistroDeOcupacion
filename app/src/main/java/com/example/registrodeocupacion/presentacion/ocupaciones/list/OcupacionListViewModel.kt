@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.example.registrodeocupacion.domain.useCase.DeleteOcupacionUseCase
-import com.example.registrodeocupacion.domain.useCase.ObserveOcupacionesUseCase
+import com.example.registrodeocupacion.domain.ocupacion.usecase.DeleteOcupacionUseCase
+import com.example.registrodeocupacion.domain.ocupacion.usecase.ObserveOcupacionesUseCase
 
 @HiltViewModel
 class OcupacionListViewModel @Inject constructor(
