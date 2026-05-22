@@ -4,7 +4,7 @@ import com.example.registrodeocupacion.domain.horasextra.model.HoraExtra
 import kotlinx.coroutines.flow.Flow
 
 interface HorasExtrasRepository {
-    fun observeHorasExtras(): Flow<List<HoraExtra>>
+    fun observeHoraExtras(): Flow<List<HoraExtra>>
 
     suspend fun getHorasExtra(id: Int): HoraExtra?
 

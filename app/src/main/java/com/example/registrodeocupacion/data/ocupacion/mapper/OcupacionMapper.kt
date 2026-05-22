@@ -6,13 +6,13 @@ import com.example.registrodeocupacion.domain.ocupacion.model.Ocupacion
 fun OcupacioneEntity.toDomain() : Ocupacion = Ocupacion(
     ocupacioneId = ocupacioneId,
     descricion = descricion,
-    sueldo = sueldo,
+    espuestodirecion = espuestodirecion,
 
     )
 
 fun Ocupacion.toEntity() : OcupacioneEntity = OcupacioneEntity(
     ocupacioneId = ocupacioneId,
     descricion = descricion,
-    sueldo = sueldo,
+    espuestodirecion = espuestodirecion,
 
     )
