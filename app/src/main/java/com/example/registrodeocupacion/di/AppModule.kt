@@ -2,7 +2,7 @@ package com.example.registrodeocupacion.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.registrodeocupacion.data.database.Registro
+import com.example.registrodeocupacion.data.database.RegistroDB
 import com.example.registrodeocupacion.data.empleado.local.EmpleadoDao
 import com.example.registrodeocupacion.data.empleado.repository.EmpleadoRepositoryImpl
 import com.example.registrodeocupacion.data.ocupacion.local.OcupacionDao
@@ -36,21 +36,21 @@ abstract class AppModule {
     companion object {
         @Provides
         @Singleton
-        fun provideOcupacionDB(@ApplicationContext context: Context): Registro {
+        fun provideOcupacionDB(@ApplicationContext context: Context): RegistroDB {
             return Room.databaseBuilder(
                 context,
-                Registro::class.java,
+                RegistroDB::class.java,
                 "Ocupacion.db"
             ).fallbackToDestructiveMigration().build()
         }
 
         @Provides
-        fun provideOcupacionDao(db: Registro): OcupacionDao {
+        fun provideOcupacionDao(db: RegistroDB): OcupacionDao {
             return db.OcupacionDao()
         }
 
         @Provides
-        fun provideEmpleadoDao(db: Registro): EmpleadoDao {
+        fun provideEmpleadoDao(db: RegistroDB): EmpleadoDao {
             return db.EmpleadoDao()
         }
     }

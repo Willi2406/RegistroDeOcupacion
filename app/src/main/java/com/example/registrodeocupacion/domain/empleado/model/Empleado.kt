@@ -9,4 +9,5 @@ class Empleado(
     val nombres: String = "",
     val sexo: String = "",
     val sueldo: Double = 0.0,
+
 )

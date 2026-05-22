@@ -3,8 +3,9 @@ package com.example.registrodeocupacion.data.empleado.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.time.LocalDate
+import java.time.ZoneId
 
-@Entity(tableName = "Empleados")
+@Entity(tableName = "empleados")
 data class EmpleadoEntity(
     @PrimaryKey(autoGenerate = true)
     val empleadoId: Int = 0,
@@ -12,4 +13,6 @@ data class EmpleadoEntity(
     val nombres: String = "",
     val sexo: String = "",
     val sueldo: Double = 0.0,
+    val ocupacionId: Int = 0,
+    val frecuenciaPago: FrecuenciaPago
 )
