@@ -1,6 +1,7 @@
 package com.example.registrodeocupacion.domain.empleado.usecase
 
 
+import com.example.registrodeocupacion.data.empleado.local.FrecuenciaPago
 import java.time.LocalDate
 
 data class ValidationResult(
@@ -33,9 +34,27 @@ fun validarSexo(sexo: String): ValidationResult{
     }
 }
 
-fun validarFecha(fecha: LocalDate): ValidationResult{
-    return when{
-        fecha.isAfter(LocalDate.now()) -> ValidationResult(false, "La fecha de ingreso es obligatoria")
+fun validarFecha(fecha: LocalDate): ValidationResult {
+    return when {
+        fecha.isAfter(LocalDate.now()) -> ValidationResult(
+            false,
+            "La fecha de ingreso es obligatoria"
+        )
+
+        else -> ValidationResult(true)
+    }
+}
+
+fun validarOcupacion(ocupacionId: String): ValidationResult {
+    return when {
+        ocupacionId.isBlank() -> ValidationResult(false, "La ocupacion es obligatoria")
+        else -> ValidationResult(true)
+    }
+}
+
+fun validarFrecuenciaPago(frecuenciaPago: String): ValidationResult {
+    return when {
+        frecuenciaPago.isBlank() -> ValidationResult(false, "La frecuencia es obligatoria")
         else -> ValidationResult(true)
     }
 }

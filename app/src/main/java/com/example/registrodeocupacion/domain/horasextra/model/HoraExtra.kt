@@ -7,7 +7,7 @@ data class HoraExtra (
     val horasExtraId: Int = 0,
     val empleadoId: Int = 0,
     val fecha: LocalDate = LocalDate.now(),
-    val cantidadHoras: Double = 0.0,
+    val cantidadHoras: Int = 0,
     val tipo: TipoHoraExtra = TipoHoraExtra.DIURNO,
     val recargo: Double = 0.0
 )

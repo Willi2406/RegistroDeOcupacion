@@ -18,24 +18,3 @@ fun validateDescription(descripcion: String, ocupacioneExistentes: List<String>)
         else -> OcupacionValidation( isValid = true)
     }
 }
-
-fun validateSueldo(sueldo: String): OcupacionValidation {
-    return when {
-        sueldo.isBlank() -> OcupacionValidation(
-            isValid = false,
-            error = "El sueldo no puede estar vacio tu no cobra es"
-        )
-
-        sueldo.toDoubleOrNull() == null -> OcupacionValidation(
-            isValid = false,
-            "Ingrese un sueldo valido"
-        )
-
-        sueldo.toDouble() <= 0.0 -> OcupacionValidation(
-            isValid = false,
-            error = "El sueldo tiene que ser mayor que cero"
-        )
-
-        else -> OcupacionValidation(isValid = true)
-    }
-}
