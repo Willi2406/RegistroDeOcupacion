@@ -1,49 +1,26 @@
 package com.example.registrodeocupacion.presentacion.empleado.edit
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel // Importación corregida para Compose Navigation
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import java.time.Instant
 import java.time.ZoneId
+import com.example.registrodeocupacion.data.empleado.local.FrecuenciaPago // Asegúrate de que la ruta del Enum sea la correcta
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,12 +32,39 @@ fun EmpleadoFormScreen(
 
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
-    var menuExpanded by remember { mutableStateOf(false) }
+    var sexoMenuExpanded by remember { mutableStateOf(false) }
+    var ocupacionMenuExpanded by remember { mutableStateOf(false) }
+    var frecuenciaMenuExpanded by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(state.saved, state.deleted) {
         if (state.saved || state.deleted) {
             onBack()
         }
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Eliminar Empleado") },
+            text = { Text("¿Estás seguro de que deseas eliminar este empleado?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDeleteDialog = false
+                        viewModel.onEvent(EmpleadoFormUiEvent.Delete)
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) {
+                    Text("Eliminar")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 
     Scaffold(
@@ -70,6 +74,13 @@ fun EmpleadoFormScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Volver")
+                    }
+                },
+                actions = {
+                    AnimatedVisibility(visible = !state.isNew) {
+                        IconButton(onClick = { showDeleteDialog = true }) {
+                            Icon(Icons.Default.Delete, "Eliminar", tint = MaterialTheme.colorScheme.error)
+                        }
                     }
                 }
             )
@@ -83,6 +94,7 @@ fun EmpleadoFormScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+
             OutlinedTextField(
                 value = state.fechaIngreso.toString(),
                 onValueChange = { },
@@ -90,15 +102,11 @@ fun EmpleadoFormScreen(
                 label = { Text("Fecha de ingreso") },
                 trailingIcon = {
                     IconButton(onClick = { showDatePicker = true }) {
-                        Icon(imageVector = Icons.Default.DateRange, contentDescription = "Seleccionar fecha")
+                        Icon(Icons.Default.DateRange, "Calendario")
                     }
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showDatePicker = true }
-                    .testTag("input_fecha_ingreso"),
-                isError = state.fechaIngresoError != null,
-                supportingText = state.fechaIngresoError?.let { errorMsg -> { Text(errorMsg) } }
+                modifier = Modifier.fillMaxWidth().clickable { showDatePicker = true },
+                isError = state.fechaIngresoError != null
             )
 
             if (showDatePicker) {
@@ -107,92 +115,118 @@ fun EmpleadoFormScreen(
                     confirmButton = {
                         TextButton(onClick = {
                             datePickerState.selectedDateMillis?.let { millis ->
-                                val date = Instant.ofEpochMilli(millis)
-                                    .atZone(ZoneId.of("UTC"))
-                                    .toLocalDate()
+                                val date = Instant.ofEpochMilli(millis).atZone(ZoneId.of("UTC")).toLocalDate()
                                 viewModel.onEvent(EmpleadoFormUiEvent.FechaIngresoChanged(date))
                             }
                             showDatePicker = false
-                        }) {
-                            Text("Aceptar")
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = { showDatePicker = false }) {
-                            Text("Cancelar")
-                        }
+                        }) { Text("Aceptar") }
                     }
-                ) {
-                    DatePicker(state = datePickerState)
-                }
+                ) { DatePicker(state = datePickerState) }
             }
 
             OutlinedTextField(
                 value = state.nombres,
                 onValueChange = { viewModel.onEvent(EmpleadoFormUiEvent.NombresChanged(it)) },
                 label = { Text("Nombres") },
-                modifier = Modifier.fillMaxWidth().testTag("input_nombres"),
-                isError = state.nombresError != null,
-                supportingText = state.nombresError?.let { errorMsg -> { Text(errorMsg) } },
-                singleLine = true
+                modifier = Modifier.fillMaxWidth(),
+                isError = state.nombresError != null
             )
 
-            val opcionesSexo = listOf("Masculino", "Femenino")
             ExposedDropdownMenuBox(
-                expanded = menuExpanded,
-                onExpandedChange = { menuExpanded = !menuExpanded }
+                expanded = sexoMenuExpanded,
+                onExpandedChange = { sexoMenuExpanded = !sexoMenuExpanded }
             ) {
                 OutlinedTextField(
                     value = state.sexo,
                     onValueChange = {},
                     readOnly = true,
                     label = { Text("Sexo") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = menuExpanded) },
-                    modifier = Modifier.fillMaxWidth().menuAnchor().testTag("input_sexo"),
-                    isError = state.sexoError != null,
-                    supportingText = state.sexoError?.let { errorMsg -> { Text(errorMsg) } }
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = sexoMenuExpanded) },
+                    modifier = Modifier.fillMaxWidth().menuAnchor()
                 )
-                ExposedDropdownMenu(
-                    expanded = menuExpanded,
-                    onDismissRequest = { menuExpanded = false }
-                ) {
-                    opcionesSexo.forEach { opcion ->
+                ExposedDropdownMenu(expanded = sexoMenuExpanded, onDismissRequest = { sexoMenuExpanded = false }) {
+                    listOf("Masculino", "Femenino").forEach { opcion ->
                         DropdownMenuItem(
                             text = { Text(opcion) },
+                            onClick = { viewModel.onEvent(EmpleadoFormUiEvent.SexoChanged(opcion)); sexoMenuExpanded = false }
+                        )
+                    }
+                }
+            }
+
+            ExposedDropdownMenuBox(
+                expanded = ocupacionMenuExpanded,
+                onExpandedChange = { ocupacionMenuExpanded = !ocupacionMenuExpanded }
+            ) {
+                OutlinedTextField(
+                    value = state.ocupacionesDisponibles.find { it.ocupacioneId == state.ocupacionId }?.descricion ?: "",
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Ocupación") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = ocupacionMenuExpanded) },
+                    modifier = Modifier.fillMaxWidth().menuAnchor(),
+                    isError = state.ocupacionIdError != null
+                )
+                ExposedDropdownMenu(expanded = ocupacionMenuExpanded, onDismissRequest = { ocupacionMenuExpanded = false }) {
+                    state.ocupacionesDisponibles.forEach { ocupacion ->
+                        DropdownMenuItem(
+                            text = { Text(ocupacion.descricion) },
                             onClick = {
-                                viewModel.onEvent(EmpleadoFormUiEvent.SexoChanged(opcion))
-                                menuExpanded = false
+                                viewModel.onEvent(EmpleadoFormUiEvent.OcupacionIdChanged(ocupacion.ocupacioneId))
+                                ocupacionMenuExpanded = false
                             }
                         )
                     }
                 }
             }
 
+
+            ExposedDropdownMenuBox(
+                expanded = frecuenciaMenuExpanded,
+                onExpandedChange = { frecuenciaMenuExpanded = !frecuenciaMenuExpanded }
+            ) {
+                OutlinedTextField(
+                    value = state.frecuenciaPago.name,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Frecuencia de Pago") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = frecuenciaMenuExpanded) },
+                    modifier = Modifier.fillMaxWidth().menuAnchor(),
+                    isError = state.frecuenciaPagoError != null,
+                    supportingText = state.frecuenciaPagoError?.let { errorMsg -> { Text(errorMsg) } }
+                )
+                ExposedDropdownMenu(
+                    expanded = frecuenciaMenuExpanded,
+                    onDismissRequest = { frecuenciaMenuExpanded = false }
+                ) {
+                    FrecuenciaPago.entries.forEach { opcion ->
+                        DropdownMenuItem(
+                            text = { Text(opcion.name) },
+                            onClick = {
+                                viewModel.onEvent(EmpleadoFormUiEvent.FrecuenciaPagoChanged(opcion))
+                                frecuenciaMenuExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
+
             OutlinedTextField(
                 value = state.sueldo,
                 onValueChange = { viewModel.onEvent(EmpleadoFormUiEvent.SueldoChanged(it)) },
                 label = { Text("Sueldo") },
-                modifier = Modifier.fillMaxWidth().testTag("input_sueldo"),
-                isError = state.sueldoError != null,
-                supportingText = state.sueldoError?.let { errorMsg -> { Text(errorMsg) } },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                singleLine = true
+                modifier = Modifier.fillMaxWidth(),
+                isError = state.sueldoError != null
             )
 
             Button(
                 onClick = { viewModel.onEvent(EmpleadoFormUiEvent.Save) },
-                modifier = Modifier.fillMaxWidth().testTag("btn_save"),
+                modifier = Modifier.fillMaxWidth(),
                 enabled = !state.isSaving
             ) {
-                if (state.isSaving) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        strokeWidth = 2.dp
-                    )
-                } else {
-                    Text("Guardar")
-                }
+                Text(if (state.isSaving) "Guardando..." else "Guardar")
             }
         }
     }

@@ -16,12 +16,12 @@ class Converters {
     }
 
     @TypeConverter
-    fun fromTipoHoraExtra(value: FrecuenciaPago): String {
+    fun fromFrecuenciaPago(value: FrecuenciaPago): String {
         return value.name
     }
 
     @TypeConverter
-    fun toTipoHoraExtra(value: String): FrecuenciaPago {
+    fun toFrecuenciaPago(value: String): FrecuenciaPago {
         return FrecuenciaPago.valueOf(value)
     }
 }
