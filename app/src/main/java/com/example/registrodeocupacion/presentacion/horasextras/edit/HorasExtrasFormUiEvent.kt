@@ -10,8 +10,7 @@ sealed interface HorasExtrasFormUiEvent {
     data class CantidadHorasChanged(val value: String) : HorasExtrasFormUiEvent
     data class TipoChanged(val value: TipoHoraExtra) : HorasExtrasFormUiEvent
     data class RecargoChanged(val value: String) : HorasExtrasFormUiEvent
+    object Calcular : HorasExtrasFormUiEvent
     object Save : HorasExtrasFormUiEvent
     object Delete : HorasExtrasFormUiEvent
-    data class ShowMessage(val message: String) : HorasExtrasFormUiEvent
-    object ClearMessage : HorasExtrasFormUiEvent
 }

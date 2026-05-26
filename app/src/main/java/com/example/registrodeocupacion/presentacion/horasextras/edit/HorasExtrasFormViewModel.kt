@@ -23,13 +23,13 @@ class HorasExtrasFormViewModel @Inject constructor(
     private val getHorasExtrasUseCase: GetHorasExtrasUseCase,
     private val upsertHorasExtrasUseCase: UpsertHorasExtrasUseCase,
     private val deleteHorasExtrasUseCase: DeleteHorasExtrasUseCase,
-    private val observeEmpleadoUseCase: ObserveEmpleadoUseCase, // Para el Dropdown de empleados
+    private val observeEmpleadoUseCase: ObserveEmpleadoUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    // Asegúrate de que el nombre de la ruta coincida con el que pusiste en Screen.kt
+
     private val routeArgs = savedStateHandle.toRoute<Screen.HorasExtrasForm>()
-    private val horasExtraId: Int = routeArgs.horasExtraId // Asegúrate de que así se llame el parámetro
+    private val horasExtraId: Int = routeArgs.horasExtraId
 
     private val _state = MutableStateFlow(HorasExtrasFormUiState())
     val state: StateFlow<HorasExtrasFormUiState> = _state.asStateFlow()
@@ -48,6 +48,7 @@ class HorasExtrasFormViewModel @Inject constructor(
             is HorasExtrasFormUiEvent.TipoChanged -> _state.update { it.copy(tipo = event.value) }
             is HorasExtrasFormUiEvent.RecargoChanged -> _state.update { it.copy(recargo = event.value, recargoError = null) }
             HorasExtrasFormUiEvent.Save -> onSave()
+            HorasExtrasFormUiEvent.Calcular -> onCalcular()
             HorasExtrasFormUiEvent.Delete -> onDelete()
             else -> {}
         }
@@ -90,8 +91,8 @@ class HorasExtrasFormViewModel @Inject constructor(
 
         // Validaciones manuales básicas
         val empleadoError = if (s.empleadoId == null || s.empleadoId == 0) "Seleccione un empleado" else null
-        val horasError = if (s.cantidadHoras.isBlank() || s.cantidadHoras.toDoubleOrNull() == null) "Ingrese una cantidad válida" else null
-        val recargoError = if (s.recargo.isBlank() || s.recargo.toDoubleOrNull() == null) "Ingrese un recargo válido" else null
+        val horasError = if (s.cantidadHoras.isBlank() || s.cantidadHoras.toDoubleOrNull() == null) "Ingrese una cantidad valida" else null
+        val recargoError = if (s.recargo.isBlank() || s.recargo.toDoubleOrNull() == null) "Ingrese un recargo valido" else null
 
         if (empleadoError != null || horasError != null || recargoError != null) {
             _state.update {
@@ -132,6 +133,33 @@ class HorasExtrasFormViewModel @Inject constructor(
             _state.update { it.copy(isDeleting = true) }
             deleteHorasExtrasUseCase(id)
             _state.update { it.copy(isDeleting = false, deleted = true) }
+        }
+    }
+
+    private fun onCalcular() {
+        val s = state.value
+
+        val empleado = s.empleadosDisponibles.find { it.empleadoId == s.empleadoId }
+        if (empleado == null) {
+            _state.update { it.copy(empleadoIdError = "Seleccione un empleado para calcular") }
+            return
+        }
+
+        val horas = s.cantidadHoras.toDoubleOrNull() ?: 0.0
+        if (horas <= 0.0) {
+            _state.update { it.copy(cantidadHorasError = "Ingrese las horas para calcular") }
+            return
+        }
+
+        val sueldoPorHora = empleado.sueldo / 23.83 / 8.0
+        val totalRecargo = sueldoPorHora * horas * s.tipo.porcentajerecargo
+
+        _state.update {
+            it.copy(
+                recargo = String.format("%.2f", totalRecargo),
+                empleadoIdError = null,
+                cantidadHorasError = null
+            )
         }
     }
 }

@@ -6,7 +6,7 @@ import com.example.registrodeocupacion.domain.horasextra.model.HoraExtra
 data class HorasExtrasListUiState(
     val isLoading: Boolean = false,
     val horasExtras: List<HoraExtra> = emptyList(),
-    val empleados: List<Empleado> = emptyList(), // Necesario para buscar el nombre del empleado
+    val empleados: List<Empleado> = emptyList(),
     val message: String? = null,
     val navigateToCreate: Boolean = false,
     val navigateToEditId: Int? = null,

@@ -13,7 +13,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,25 +32,25 @@ fun HorasExtrasFormScreen(
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
 
-    // Estados para los menús desplegables
+
     var empleadoMenuExpanded by remember { mutableStateOf(false) }
     var tipoMenuExpanded by remember { mutableStateOf(false) }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    // Manejo de navegación al guardar o eliminar
+
     LaunchedEffect(state.saved, state.deleted) {
         if (state.saved || state.deleted) {
             onBack()
         }
     }
 
-    // Diálogo de confirmación para eliminar
+
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
             title = { Text("Eliminar Registro") },
-            text = { Text("¿Estás seguro de que deseas eliminar este registro de horas extras?") },
+            text = { Text("¿Estas seguro de que deseas eliminar este registro de horas extras?") },
             confirmButton = {
                 Button(
                     onClick = {
@@ -99,13 +98,11 @@ fun HorasExtrasFormScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            // 1. Selector de Empleado
             ExposedDropdownMenuBox(
                 expanded = empleadoMenuExpanded,
                 onExpandedChange = { empleadoMenuExpanded = !empleadoMenuExpanded }
             ) {
                 OutlinedTextField(
-                    // Buscamos el nombre del empleado seleccionado para mostrarlo en el TextField
                     value = state.empleadosDisponibles.find { it.empleadoId == state.empleadoId }?.nombres ?: "",
                     onValueChange = {},
                     readOnly = true,
@@ -131,7 +128,6 @@ fun HorasExtrasFormScreen(
                 }
             }
 
-            // 2. Selector de Fecha
             OutlinedTextField(
                 value = state.fecha.toString(),
                 onValueChange = { },
@@ -161,7 +157,6 @@ fun HorasExtrasFormScreen(
                 ) { DatePicker(state = datePickerState) }
             }
 
-            // 3. Cantidad de Horas
             OutlinedTextField(
                 value = state.cantidadHoras,
                 onValueChange = { viewModel.onEvent(HorasExtrasFormUiEvent.CantidadHorasChanged(it)) },
@@ -172,13 +167,12 @@ fun HorasExtrasFormScreen(
                 supportingText = state.cantidadHorasError?.let { errorMsg -> { Text(errorMsg) } }
             )
 
-            // 4. Selector de Tipo de Hora Extra
             ExposedDropdownMenuBox(
                 expanded = tipoMenuExpanded,
                 onExpandedChange = { tipoMenuExpanded = !tipoMenuExpanded }
             ) {
                 OutlinedTextField(
-                    value = state.tipo.descripcion, // Mostramos la descripción bonita (ej: "Diurno")
+                    value = state.tipo.descripcion,
                     onValueChange = {},
                     readOnly = true,
                     label = { Text("Tipo de Hora Extra") },
@@ -214,7 +208,6 @@ fun HorasExtrasFormScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // 6. Botón Guardar
             Button(
                 onClick = { viewModel.onEvent(HorasExtrasFormUiEvent.Save) },
                 modifier = Modifier.fillMaxWidth().height(50.dp),
@@ -230,6 +223,24 @@ fun HorasExtrasFormScreen(
                     Text("Guardar Horas Extras")
                 }
             }
+
+            Button(
+                onClick = { viewModel.onEvent(HorasExtrasFormUiEvent.Calcular) },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+            ) {
+                Text("Calcular Pago de Horas Extras")
+            }
+
+            OutlinedTextField(
+                value = state.recargo,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Recargo Calculado (RD$)") },
+                modifier = Modifier.fillMaxWidth(),
+                isError = state.recargoError != null,
+                supportingText = state.recargoError?.let { errorMsg -> { Text(errorMsg) } }
+            )
         }
     }
 }

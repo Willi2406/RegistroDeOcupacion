@@ -59,7 +59,7 @@ fun OcupacionFormScreen(
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
             title = { Text("Eliminar Ocupación") },
-            text = { Text("¿Estás seguro de que deseas eliminar esta ocupación? Esta acción no se puede deshacer.") },
+            text = { Text("¿Estás seguro de que deseas eliminar esta ocupación? Esta accion no se puede deshacer.") },
             confirmButton = {
                 Button(
                     onClick = {
@@ -113,7 +113,7 @@ fun OcupacionFormScreen(
             OutlinedTextField(
                 value = state.descripcion,
                 onValueChange = { viewModel.onEvent(OcupacionFormUiEvent.DescripcionChanged(it)) },
-                label = { Text("Descripción") },
+                label = { Text("Descripcion") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("input_descripcion"),
@@ -133,7 +133,7 @@ fun OcupacionFormScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "¿Es un puesto de dirección?",
+                    text = "¿Es un puesto de direccion?",
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Switch(

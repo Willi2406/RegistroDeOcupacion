@@ -41,7 +41,7 @@ class HorasExtrasListViewModel @Inject constructor(
             HorasExtrasListUiEvent.ClearMessage -> _state.update { it.copy(message = null) }
             HorasExtrasListUiEvent.CreateNew -> _state.update { it.copy(navigateToCreate = true) }
             is HorasExtrasListUiEvent.Edit -> _state.update { it.copy(navigateToEditId = event.id) }
-            else -> {} // Previene errores si el evento Delete sigue definido en la interfaz sellada
+            else -> {}
         }
     }
 

@@ -65,7 +65,7 @@ fun HorasExtrasListBody(
             if (state.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center).testTag("Cargando"))
             } else if (state.horasExtras.isEmpty()) {
-                Text(text = "No hay horas extras registradas", modifier = Modifier.align(Alignment.Center).testTag("Mensaje_Vacio"))
+                Text(text = "No hay horas extras registradas", modifier = Modifier.align(Alignment.Center).testTag("Mensaje Vacio"))
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
@@ -74,12 +74,11 @@ fun HorasExtrasListBody(
                 ) {
                     items(items = state.horasExtras, key = { it.horasExtraId }) { horaExtra ->
 
-                        // MAGIA AQUÍ: Buscamos el nombre del empleado
                         val empleadoNombre = state.empleados.find { it.empleadoId == horaExtra.empleadoId }?.nombres ?: "Empleado Desconocido"
 
                         HoraExtraItem(
                             horaExtra = horaExtra,
-                            empleadoNombre = empleadoNombre, // Pasamos el nombre real
+                            empleadoNombre = empleadoNombre,
                             onEdit = { onEditClick(horaExtra.horasExtraId) }
                         )
                     }

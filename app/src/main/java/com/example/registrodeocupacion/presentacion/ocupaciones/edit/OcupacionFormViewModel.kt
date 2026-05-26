@@ -83,7 +83,7 @@ class OcupacionFormViewModel @Inject constructor(
     private fun onSave() {
         viewModelScope.launch {
             val descripcion = state.value.descripcion
-            val esPuestoDireccion = state.value.esPuestoDireccion // Obtener el estado del Switch
+            val esPuestoDireccion = state.value.esPuestoDireccion
 
             val descripcionesExistentes = repository.observeOcupaciones()
                 .first()
@@ -105,7 +105,7 @@ class OcupacionFormViewModel @Inject constructor(
             val ocupacion = Ocupacion(
                 ocupacioneId = state.value.ocupacionId ?: 0,
                 descricion = descripcion,
-                espuestodirecion = esPuestoDireccion // Pasar el boolean al modelo
+                espuestodirecion = esPuestoDireccion
             )
 
             val result = upsertOcupacionUseCase(ocupacion)
