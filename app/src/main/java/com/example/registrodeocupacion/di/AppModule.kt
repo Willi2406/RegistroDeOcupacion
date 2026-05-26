@@ -5,9 +5,12 @@ import androidx.room.Room
 import com.example.registrodeocupacion.data.database.RegistroDB
 import com.example.registrodeocupacion.data.empleado.local.EmpleadoDao
 import com.example.registrodeocupacion.data.empleado.repository.EmpleadoRepositoryImpl
+import com.example.registrodeocupacion.data.horasextra.local.HorasExtraDao
+import com.example.registrodeocupacion.data.horasextra.repository.HorasExtrasRepositoryImpl
 import com.example.registrodeocupacion.data.ocupacion.local.OcupacionDao
 import com.example.registrodeocupacion.data.ocupacion.repository.OcupacionRepositoryImpl
 import com.example.registrodeocupacion.domain.empleado.repository.EmpleadoRepository
+import com.example.registrodeocupacion.domain.horasextra.repository.HorasExtrasRepository
 import com.example.registrodeocupacion.domain.ocupacion.repository.OcupacionRepository
 import dagger.Binds
 import dagger.Module
@@ -33,6 +36,12 @@ abstract class AppModule {
         empleadoRepositoryImpl: EmpleadoRepositoryImpl
     ): EmpleadoRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindHorasExtrasRepository(
+        horasExtrasRepositoryImpl: HorasExtrasRepositoryImpl
+    ): HorasExtrasRepository
+
     companion object {
         @Provides
         @Singleton
@@ -52,6 +61,11 @@ abstract class AppModule {
         @Provides
         fun provideEmpleadoDao(db: RegistroDB): EmpleadoDao {
             return db.EmpleadoDao()
+        }
+
+        @Provides
+        fun provideHorasExtraDao(db: RegistroDB): HorasExtraDao {
+            return db.HorasExtraDao()
         }
     }
 }
