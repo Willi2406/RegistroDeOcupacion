@@ -195,7 +195,7 @@ fun HorasExtrasFormScreen(
                 }
             }
 
-            // 5. Recargo
+
             OutlinedTextField(
                 value = state.recargo,
                 onValueChange = { viewModel.onEvent(HorasExtrasFormUiEvent.RecargoChanged(it)) },
@@ -206,7 +206,25 @@ fun HorasExtrasFormScreen(
                 supportingText = state.recargoError?.let { errorMsg -> { Text(errorMsg) } }
             )
 
+            OutlinedTextField(
+                value = state.recargo,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Recargo Calculado (RD$)") },
+                modifier = Modifier.fillMaxWidth(),
+                isError = state.recargoError != null,
+                supportingText = state.recargoError?.let { errorMsg -> { Text(errorMsg) } }
+            )
+
             Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                onClick = { viewModel.onEvent(HorasExtrasFormUiEvent.Calcular) },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+            ) {
+                Text("Calcular Pago de Horas Extras")
+            }
 
             Button(
                 onClick = { viewModel.onEvent(HorasExtrasFormUiEvent.Save) },
@@ -224,23 +242,6 @@ fun HorasExtrasFormScreen(
                 }
             }
 
-            Button(
-                onClick = { viewModel.onEvent(HorasExtrasFormUiEvent.Calcular) },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
-            ) {
-                Text("Calcular Pago de Horas Extras")
-            }
-
-            OutlinedTextField(
-                value = state.recargo,
-                onValueChange = {},
-                readOnly = true,
-                label = { Text("Recargo Calculado (RD$)") },
-                modifier = Modifier.fillMaxWidth(),
-                isError = state.recargoError != null,
-                supportingText = state.recargoError?.let { errorMsg -> { Text(errorMsg) } }
-            )
         }
     }
 }
