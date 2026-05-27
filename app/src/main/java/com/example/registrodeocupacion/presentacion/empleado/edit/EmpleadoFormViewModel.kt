@@ -12,13 +12,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.registrodeocupacion.domain.empleado.model.Empleado
-import com.example.registrodeocupacion.domain.empleado.usecase.DeleteEmpleadoUseCase
-import com.example.registrodeocupacion.domain.empleado.usecase.GetEmpleadoUseCase
-import com.example.registrodeocupacion.domain.empleado.usecase.UpsertEmpleadoUseCase
-import com.example.registrodeocupacion.domain.empleado.usecase.validarFecha
-import com.example.registrodeocupacion.domain.empleado.usecase.validarNombres
-import com.example.registrodeocupacion.domain.empleado.usecase.validarSexo
-import com.example.registrodeocupacion.domain.empleado.usecase.validarSueldo
+import com.example.registrodeocupacion.data.empleado.local.FrecuenciaPago // Asegúrate que esta sea la ruta real
+import com.example.registrodeocupacion.domain.empleado.usecase.*
+import com.example.registrodeocupacion.domain.ocupacion.usecase.ObserveOcupacionesUseCase
 import com.example.registrodeocupacion.presentacion.navegation.Screen
 
 @HiltViewModel
@@ -26,6 +22,7 @@ class EmpleadoFormViewModel @Inject constructor(
     private val getEmpleadoUseCase: GetEmpleadoUseCase,
     private val upsertEmpleadoUseCase: UpsertEmpleadoUseCase,
     private val deleteEmpleadoUseCase: DeleteEmpleadoUseCase,
+    private val observeOcupacionesUseCase: ObserveOcupacionesUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -36,6 +33,7 @@ class EmpleadoFormViewModel @Inject constructor(
     val state: StateFlow<EmpleadoFormUiState> = _state.asStateFlow()
 
     init {
+        loadOcupaciones()
         loadEmpleado(empleadoId)
     }
 
@@ -46,8 +44,23 @@ class EmpleadoFormViewModel @Inject constructor(
             is EmpleadoFormUiEvent.NombresChanged -> _state.update { it.copy(nombres = event.value, nombresError = null) }
             is EmpleadoFormUiEvent.SexoChanged -> _state.update { it.copy(sexo = event.value, sexoError = null) }
             is EmpleadoFormUiEvent.SueldoChanged -> _state.update { it.copy(sueldo = event.value, sueldoError = null) }
+
+            is EmpleadoFormUiEvent.FrecuenciaPagoChanged -> _state.update {
+                it.copy(frecuenciaPago = event.value, frecuenciaPagoError = null)
+            }
+
+            is EmpleadoFormUiEvent.OcupacionIdChanged -> _state.update { it.copy(ocupacionId = event.value, ocupacionIdError = null) }
+
             EmpleadoFormUiEvent.Save -> onSave()
             EmpleadoFormUiEvent.Delete -> onDelete()
+        }
+    }
+
+    private fun loadOcupaciones() {
+        viewModelScope.launch {
+            observeOcupacionesUseCase().collect { listaOcupaciones ->
+                _state.update { it.copy(ocupacionesDisponibles = listaOcupaciones) }
+            }
         }
     }
 
@@ -67,33 +80,38 @@ class EmpleadoFormViewModel @Inject constructor(
                         fechaIngreso = empleado.fechaIngreso,
                         nombres = empleado.nombres,
                         sexo = empleado.sexo,
-                        sueldo = empleado.sueldo.toString()
+                        sueldo = empleado.sueldo.toString(),
+                        frecuenciaPago = empleado.frecuenciaPago,
+                        ocupacionId = empleado.ocupacionId
                     )
                 }
-            } else {
-                _state.update { it.copy(isNew = true, empleadoId = null) }
             }
         }
     }
 
     private fun onSave() {
-        val fechaIngreso = state.value.fechaIngreso
-        val nombres = state.value.nombres
-        val sexo = state.value.sexo
-        val sueldoText = state.value.sueldo
+        val s = state.value
 
-        val fechaIngresoValidation = validarFecha(fechaIngreso)
-        val nombresValidation = validarNombres(nombres)
-        val sexoValidation = validarSexo(sexo)
-        val sueldoValidation = validarSueldo(sueldoText)
+        val fechaResult = validarFecha(s.fechaIngreso)
+        val nombresResult = validarNombres(s.nombres)
+        val sexoResult = validarSexo(s.sexo)
+        val sueldoResult = validarSueldo(s.sueldo)
 
-        if (!fechaIngresoValidation.isValid || !nombresValidation.isValid || !sexoValidation.isValid || !sueldoValidation.isValid) {
+
+        val ocupacionError = if(s.ocupacionId == null || s.ocupacionId == 0) "Seleccione una ocupación" else null
+
+
+        val frecuenciaError = if(s.frecuenciaPago == null) "Seleccione una frecuencia" else null
+
+        if (!fechaResult.isValid || !nombresResult.isValid || !sexoResult.isValid || !sueldoResult.isValid || frecuenciaError != null || ocupacionError != null) {
             _state.update {
                 it.copy(
-                    fechaIngresoError = fechaIngresoValidation.error,
-                    nombresError = nombresValidation.error,
-                    sexoError = sexoValidation.error,
-                    sueldoError = sueldoValidation.error
+                    fechaIngresoError = fechaResult.error,
+                    nombresError = nombresResult.error,
+                    sexoError = sexoResult.error,
+                    sueldoError = sueldoResult.error,
+                    frecuenciaPagoError = frecuenciaError,
+                    ocupacionIdError = ocupacionError
                 )
             }
             return
@@ -103,27 +121,18 @@ class EmpleadoFormViewModel @Inject constructor(
             _state.update { it.copy(isSaving = true) }
 
             val empleado = Empleado(
-                empleadoId = state.value.empleadoId ?: 0,
-                fechaIngreso = fechaIngreso,
-                nombres = nombres,
-                sexo = sexo,
-                sueldo = sueldoText.toDouble()
+                empleadoId = s.empleadoId ?: 0,
+                fechaIngreso = s.fechaIngreso,
+                nombres = s.nombres,
+                sexo = s.sexo,
+                sueldo = s.sueldo.toDoubleOrNull() ?: 0.0,
+                frecuenciaPago = s.frecuenciaPago!!,
+                ocupacionId = s.ocupacionId ?: 0
             )
 
-            val result = upsertEmpleadoUseCase(empleado)
-
-            result.onSuccess { newId ->
-                _state.update {
-                    it.copy(
-                        isSaving = false,
-                        saved = true,
-                        empleadoId = newId,
-                        isNew = false
-                    )
-                }
-            }.onFailure {
-                _state.update { it.copy(isSaving = false) }
-            }
+            upsertEmpleadoUseCase(empleado)
+                .onSuccess { newId -> _state.update { it.copy(isSaving = false, saved = true, empleadoId = newId) } }
+                .onFailure { _state.update { it.copy(isSaving = false) } }
         }
     }
 

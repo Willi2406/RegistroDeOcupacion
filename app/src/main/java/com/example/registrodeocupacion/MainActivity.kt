@@ -7,6 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.DateRange // ¡Nueva importación para el ícono de Horas Extras!
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -20,12 +22,9 @@ import com.example.registrodeocupacion.presentacion.navegation.MineNavHost
 import dagger.hilt.android.AndroidEntryPoint
 import com.example.registrodeocupacion.presentacion.navegation.Screen
 import com.example.registrodeocupacion.ui.theme.RegistroDeOcupacionTheme
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
-
-
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -35,10 +34,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             RegistroDeOcupacionTheme {
                 val navController = rememberNavController()
+
+
                 val items = listOf(
                     TopLevelRoute("Empleado", Screen.EmpleadoList, Icons.Default.Person),
-                    TopLevelRoute("Ocupacion", Screen.OcupacionList, Icons.Default.Home)
+                    TopLevelRoute("Ocupacion", Screen.OcupacionList, Icons.Default.Home),
+                    TopLevelRoute("Horas Extras", Screen.HorasExtrasList, Icons.Default.DateRange)
                 )
+
                 Scaffold(
                     bottomBar = {
                         NavigationBar {

@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 
 sealed class Screen {
 
-
     @Serializable
     data object EmpleadoList : Screen()
 
@@ -16,4 +15,11 @@ sealed class Screen {
 
     @Serializable
     data class OcupacionForm(val ocupacionId: Int) : Screen()
+
+
+    @Serializable
+    data object HorasExtrasList : Screen()
+
+    @Serializable
+    data class HorasExtrasForm(val horasExtraId: Int) : Screen()
 }

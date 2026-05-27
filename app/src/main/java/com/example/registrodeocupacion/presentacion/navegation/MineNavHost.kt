@@ -12,8 +12,9 @@ import com.example.registrodeocupacion.presentacion.empleado.edit.EmpleadoFormSc
 import com.example.registrodeocupacion.presentacion.empleado.list.EmpleadoListScreen
 import com.example.registrodeocupacion.presentacion.ocupaciones.list.OcupacionListScreen
 import com.example.registrodeocupacion.presentacion.ocupaciones.edit.OcupacionFormScreen
-
-
+// Importaciones de Horas Extras
+import com.example.registrodeocupacion.presentacion.horasextras.list.HorasExtrasListScreen
+import com.example.registrodeocupacion.presentacion.horasextras.edit.HorasExtrasFormScreen
 
 @Composable
 fun MineNavHost(
@@ -58,6 +59,25 @@ fun MineNavHost(
 
         composable<Screen.EmpleadoForm> {
             EmpleadoFormScreen(
+                onBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+
+        composable<Screen.HorasExtrasList> {
+            HorasExtrasListScreen(
+                onAddHoraExtra = {
+                    navController.navigate(Screen.HorasExtrasForm(horasExtraId = 0))
+                },
+                onEditHoraExtra = { id ->
+                    navController.navigate(Screen.HorasExtrasForm(horasExtraId = id))
+                }
+            )
+        }
+
+        composable<Screen.HorasExtrasForm> {
+            HorasExtrasFormScreen(
                 onBack = {
                     navController.navigateUp()
                 }

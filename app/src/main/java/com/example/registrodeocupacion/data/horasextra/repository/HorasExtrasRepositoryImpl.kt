@@ -10,7 +10,8 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import kotlin.time.TimeSource
 
-class HorasExtraRepositorylmpl @Inject constructor(
+class HorasExtrasRepositoryImpl @Inject constructor(
+
     private val localDataSource: HorasExtraDao
 ): HorasExtrasRepository{
     override fun observeHorasExtras(): Flow<List<HoraExtra>>{
