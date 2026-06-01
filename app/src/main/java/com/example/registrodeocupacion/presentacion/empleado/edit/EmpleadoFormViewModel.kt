@@ -34,7 +34,6 @@ class EmpleadoFormViewModel @Inject constructor(
 
     init {
         loadOcupaciones()
-        loadEmpleado(empleadoId)
     }
 
     fun onEvent(event: EmpleadoFormUiEvent) {
@@ -64,11 +63,13 @@ class EmpleadoFormViewModel @Inject constructor(
         }
     }
 
-    private fun loadEmpleado(id: Int?) {
-        if (id == null || id == 0) {
-            _state.update { it.copy(isNew = true, empleadoId = null) }
+    fun loadEmpleado(id: Int) {
+        if( id == 0 ){
+            val ocupaciones = _state.value.ocupacionesDisponibles
+            _state.value = EmpleadoFormUiState(ocupacionesDisponibles = ocupaciones)
             return
         }
+
 
         viewModelScope.launch {
             val empleado = getEmpleadoUseCase(id)

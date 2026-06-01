@@ -16,6 +16,7 @@ import com.example.registrodeocupacion.domain.horasextra.model.HoraExtra
 import com.example.registrodeocupacion.domain.horasextra.usecase.DeleteHorasExtrasUseCase
 import com.example.registrodeocupacion.domain.horasextra.usecase.GetHorasExtrasUseCase
 import com.example.registrodeocupacion.domain.horasextra.usecase.UpsertHorasExtrasUseCase
+import com.example.registrodeocupacion.domain.ocupacion.usecase.ObserveOcupacionesUseCase
 import com.example.registrodeocupacion.presentacion.navegation.Screen
 
 @HiltViewModel
@@ -24,6 +25,7 @@ class HorasExtrasFormViewModel @Inject constructor(
     private val upsertHorasExtrasUseCase: UpsertHorasExtrasUseCase,
     private val deleteHorasExtrasUseCase: DeleteHorasExtrasUseCase,
     private val observeEmpleadoUseCase: ObserveEmpleadoUseCase,
+    private val observeOcupacionesUseCase: ObserveOcupacionesUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -36,7 +38,7 @@ class HorasExtrasFormViewModel @Inject constructor(
 
     init {
         loadEmpleados()
-        loadHoraExtra(horasExtraId)
+        loadOcupaciones()
     }
 
     fun onEvent(event: HorasExtrasFormUiEvent) {
@@ -62,11 +64,25 @@ class HorasExtrasFormViewModel @Inject constructor(
         }
     }
 
-    private fun loadHoraExtra(id: Int?) {
-        if (id == null || id == 0) {
-            _state.update { it.copy(isNew = true, horasExtraId = null) }
+    fun loadOcupaciones() {
+        viewModelScope.launch {
+            observeOcupacionesUseCase().collect { listaOcupaciones ->
+                _state.update { it.copy(ocupacionesDisponibles = listaOcupaciones) }
+            }
+        }
+    }
+
+    fun loadHoraExtra(id: Int){
+        if(id == 0 ) {
+            val empleados = _state.value.empleadosDisponibles
+            val ocupaciones = _state.value.ocupacionesDisponibles
+            _state.value = HorasExtrasFormUiState(
+                empleadosDisponibles = empleados,
+                ocupacionesDisponibles = ocupaciones
+            )
             return
         }
+
 
         viewModelScope.launch {
             val horaExtra = getHorasExtrasUseCase(id)

@@ -4,7 +4,7 @@ import com.example.registrodeocupacion.data.horasextra.local.TipoHoraExtra
 import java.time.LocalDate
 
 sealed interface HorasExtrasFormUiEvent {
-    data class Load(val id: Int?) : HorasExtrasFormUiEvent
+    data class Load(val id: Int) : HorasExtrasFormUiEvent
     data class EmpleadoIdChanged(val value: Int) : HorasExtrasFormUiEvent
     data class FechaChanged(val value: LocalDate) : HorasExtrasFormUiEvent
     data class CantidadHorasChanged(val value: String) : HorasExtrasFormUiEvent

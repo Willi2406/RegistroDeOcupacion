@@ -73,6 +73,11 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.compose.adaptive)
+    implementation(libs.compose.adaptive.layout)
+    implementation(libs.compose.adaptive.nav)
+    implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.3.0")
+    implementation("androidx.compose.material3:material3-window-size-class:1.3.0")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
     testImplementation("junit:junit:4.13.2")
@@ -88,4 +93,5 @@ dependencies {
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.48")
     kspAndroidTest("com.google.dagger:hilt-android-compiler:2.48")
     testImplementation("androidx.room:room-testing:2.6.0")
+
 }

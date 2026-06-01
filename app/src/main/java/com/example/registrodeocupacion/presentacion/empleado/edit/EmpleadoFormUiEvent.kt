@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 
 sealed interface EmpleadoFormUiEvent {
-    data class Load(val id: Int?): EmpleadoFormUiEvent
+    data class Load(val id: Int): EmpleadoFormUiEvent
 
     data class FechaIngresoChanged(val value: LocalDate): EmpleadoFormUiEvent
 

@@ -26,7 +26,8 @@ import com.example.registrodeocupacion.data.empleado.local.FrecuenciaPago // Ase
 @Composable
 fun EmpleadoFormScreen(
     viewModel: EmpleadoFormViewModel = hiltViewModel(),
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    empleadoId: Int
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -36,6 +37,10 @@ fun EmpleadoFormScreen(
     var ocupacionMenuExpanded by remember { mutableStateOf(false) }
     var frecuenciaMenuExpanded by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(empleadoId) {
+        viewModel.loadEmpleado(empleadoId)
+    }
 
     LaunchedEffect(state.saved, state.deleted) {
         if (state.saved || state.deleted) {

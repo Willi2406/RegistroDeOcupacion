@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.registrodeocupacion.data.horasextra.local.TipoHoraExtra
+import com.example.registrodeocupacion.domain.horasextra.model.HoraExtra
 import java.time.Instant
 import java.time.ZoneId
 
@@ -25,7 +26,8 @@ import java.time.ZoneId
 @Composable
 fun HorasExtrasFormScreen(
     viewModel: HorasExtrasFormViewModel = hiltViewModel(),
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    horaExtraId: Int
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -38,6 +40,9 @@ fun HorasExtrasFormScreen(
 
     var showDeleteDialog by remember { mutableStateOf(false) }
 
+    LaunchedEffect(horaExtraId) {
+        viewModel.loadHoraExtra(horaExtraId)
+    }
 
     LaunchedEffect(state.saved, state.deleted) {
         if (state.saved || state.deleted) {

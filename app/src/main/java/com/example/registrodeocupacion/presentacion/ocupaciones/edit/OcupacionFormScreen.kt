@@ -43,11 +43,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 @Composable
 fun OcupacionFormScreen(
     viewModel: OcupacionFormViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    ocupacionId: Int
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     var showDeleteDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(ocupacionId) {
+        viewModel.loadOcupacion(ocupacionId)
+    }
 
     LaunchedEffect(state.saved, state.deleted) {
         if (state.saved || state.deleted) {

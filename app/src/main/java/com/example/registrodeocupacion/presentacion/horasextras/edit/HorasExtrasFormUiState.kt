@@ -2,6 +2,7 @@ package com.example.registrodeocupacion.presentacion.horasextras.edit
 
 import com.example.registrodeocupacion.data.horasextra.local.TipoHoraExtra
 import com.example.registrodeocupacion.domain.empleado.model.Empleado
+import com.example.registrodeocupacion.domain.ocupacion.model.Ocupacion
 import java.time.LocalDate
 
 data class HorasExtrasFormUiState(
@@ -20,5 +21,6 @@ data class HorasExtrasFormUiState(
     val isNew: Boolean = true,
     val saved: Boolean = false,
     val deleted: Boolean = false,
-    val empleadosDisponibles: List<Empleado> = emptyList()
+    val empleadosDisponibles: List<Empleado> = emptyList(),
+    val ocupacionesDisponibles: List<Ocupacion> = emptyList()
 )
