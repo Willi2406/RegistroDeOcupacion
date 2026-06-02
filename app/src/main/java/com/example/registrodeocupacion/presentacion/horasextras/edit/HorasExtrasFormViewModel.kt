@@ -30,8 +30,8 @@ class HorasExtrasFormViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    private val routeArgs = savedStateHandle.toRoute<Screen.HorasExtrasForm>()
-    private val horasExtraId: Int = routeArgs.horasExtraId
+    private val routeArgs: Screen.HorasExtrasForm? = runCatching { savedStateHandle.toRoute<Screen.HorasExtrasForm>() }.getOrNull()
+    private val initialHorasExtraId: Int = routeArgs?.horasExtraId ?: 0
 
     private val _state = MutableStateFlow(HorasExtrasFormUiState())
     val state: StateFlow<HorasExtrasFormUiState> = _state.asStateFlow()
@@ -39,6 +39,7 @@ class HorasExtrasFormViewModel @Inject constructor(
     init {
         loadEmpleados()
         loadOcupaciones()
+        loadHoraExtra(initialHorasExtraId)
     }
 
     fun onEvent(event: HorasExtrasFormUiEvent) {

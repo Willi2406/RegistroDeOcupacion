@@ -31,14 +31,14 @@ class OcupacionFormViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val routeArgs = savedStateHandle.toRoute<Screen.OcupacionForm>()
-    private val ocupacionId: Int = routeArgs.ocupacionId
+    private val routeArgs: Screen.OcupacionForm? = runCatching { savedStateHandle.toRoute<Screen.OcupacionForm>() }.getOrNull()
+    private val initialOcupacionId: Int = routeArgs?.ocupacionId ?: 0
 
     private val _state = MutableStateFlow(OcupacionFormUiState())
     val state: StateFlow<OcupacionFormUiState> = _state.asStateFlow()
 
     init {
-        loadOcupacion(ocupacionId)
+        loadOcupacion(initialOcupacionId)
     }
 
     fun onEvent(event: OcupacionFormUiEvent) {

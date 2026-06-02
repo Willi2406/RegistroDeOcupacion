@@ -26,14 +26,15 @@ class EmpleadoFormViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val routeArgs = savedStateHandle.toRoute<Screen.EmpleadoForm>()
-    private val empleadoId: Int = routeArgs.empleadoId
+    private val routeArgs: Screen.EmpleadoForm? = runCatching { savedStateHandle.toRoute<Screen.EmpleadoForm>() }.getOrNull()
+    private val initialEmpleadoId: Int = routeArgs?.empleadoId ?: 0
 
     private val _state = MutableStateFlow(EmpleadoFormUiState())
     val state: StateFlow<EmpleadoFormUiState> = _state.asStateFlow()
 
     init {
         loadOcupaciones()
+        loadEmpleado(initialEmpleadoId)
     }
 
     fun onEvent(event: EmpleadoFormUiEvent) {
